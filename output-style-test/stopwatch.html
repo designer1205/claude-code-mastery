@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스톱워치</title>
+    <!-- Tailwind CSS CDN 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 버튼 누르는 효과 */
+        .btn-click:active {
+            transform: scale(0.95);
+        }
+
+        /* 기록 리스트 애니메이션 */
+        .lap-item {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
+        <!-- 제목 -->
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">스톱워치</h1>
+
+        <!-- 시간 표시 영역 -->
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-8 mb-8 text-center">
+            <div id="display" class="text-6xl font-mono font-bold text-white tracking-wider">
+                00:00:00
+            </div>
+            <div class="text-blue-100 text-sm mt-2">시간 : 분 : 초</div>
+        </div>
+
+        <!-- 버튼 그룹 -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <!-- 시작/일시정지 버튼 -->
+            <button id="startBtn"
+                    class="btn-click bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200">
+                시작
+            </button>
+
+            <!-- 리셋 버튼 -->
+            <button id="resetBtn"
+                    class="btn-click bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200">
+                리셋
+            </button>
+        </div>
+
+        <!-- 기록 버튼 -->
+        <button id="lapBtn"
+                class="btn-click w-full bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 mb-6"
+                disabled>
+            누적 기록
+        </button>
+
+        <!-- 기록 리스트 -->
+        <div class="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
+            <h2 class="text-lg font-bold text-gray-800 mb-3">기록</h2>
+            <ul id="lapList" class="space-y-2">
+                <li class="text-center text-gray-400 text-sm">기록이 없습니다</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ===== 스톱워치 상태 관리 =====
+        let elapsedTime = 0; // 누적 경과 시간(밀리초)
+        let isRunning = false; // 실행 중 여부
+        let intervalId = null; // setInterval ID (나중에 정리하기 위해 저장)
+        let laps = []; // 기록 배열
+
+        // ===== DOM 요소들을 미리 가져오기 =====
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const lapBtn = document.getElementById('lapBtn');
+        const lapList = document.getElementById('lapList');
+
+        // ===== 시간을 "HH:MM:SS" 형식으로 변환하는 함수 =====
+        function formatTime(ms) {
+            // 밀리초를 총 초로 변환 (Math.floor는 소수점 버리기)
+            const totalSeconds = Math.floor(ms / 1000);
+
+            // 시간 계산: 3600초 = 1시간
+            const hours = Math.floor(totalSeconds / 3600);
+
+            // 분 계산: 나머지 초에서 60초씩 묶기
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+            // 초 계산: 1분(60초) 이하의 나머지
+            const seconds = totalSeconds % 60;
+
+            // 각각 2자리로 만들기 (예: 5 → "05")
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // ===== 화면에 시간 표시하는 함수 =====
+        function updateDisplay() {
+            display.textContent = formatTime(elapsedTime);
+        }
+
+        // ===== 시작/일시정지 버튼 클릭 시 =====
+        startBtn.addEventListener('click', function() {
+            if (isRunning) {
+                // 실행 중이면 일시정지
+                clearInterval(intervalId); // 반복 중지
+                isRunning = false;
+                startBtn.textContent = '시작';
+                startBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600', 'active:bg-yellow-700');
+                startBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'active:bg-green-700');
+            } else {
+                // 멈춰있으면 시작
+                isRunning = true;
+                startBtn.textContent = '일시정지';
+                startBtn.classList.remove('bg-green-500', 'hover:bg-green-600', 'active:bg-green-700');
+                startBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600', 'active:bg-yellow-700');
+                lapBtn.disabled = false; // 기록 버튼 활성화
+
+                // 100ms마다 시간 업데이트 (매끄러운 움직임)
+                intervalId = setInterval(function() {
+                    elapsedTime += 100; // 100ms씩 증가
+                    updateDisplay();
+                }, 100);
+            }
+        });
+
+        // ===== 리셋 버튼 클릭 시 =====
+        resetBtn.addEventListener('click', function() {
+            // 실행 중이면 먼저 정지
+            if (isRunning) {
+                clearInterval(intervalId);
+                isRunning = false;
+                startBtn.textContent = '시작';
+                startBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600', 'active:bg-yellow-700');
+                startBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'active:bg-green-700');
+            }
+
+            // 모든 데이터 초기화
+            elapsedTime = 0;
+            laps = [];
+            lapBtn.disabled = true; // 기록 버튼 비활성화
+            updateDisplay();
+            renderLaps(); // 기록 목록 비우기
+        });
+
+        // ===== 기록 버튼 클릭 시 =====
+        lapBtn.addEventListener('click', function() {
+            // 현재 시간을 기록 배열에 추가
+            laps.push(elapsedTime);
+            renderLaps();
+        });
+
+        // ===== 기록 목록을 화면에 그리는 함수 =====
+        function renderLaps() {
+            if (laps.length === 0) {
+                // 기록이 없으면 안내 메시지 표시
+                lapList.innerHTML = '<li class="text-center text-gray-400 text-sm">기록이 없습니다</li>';
+                return;
+            }
+
+            // 기록들을 역순으로 표시 (가장 최신 기록이 위에)
+            lapList.innerHTML = laps.reverse().map((lap, index) => {
+                const lapNumber = laps.length - index; // 역순이므로 번호 계산
+                return `
+                    <li class="lap-item bg-white border border-gray-200 p-3 rounded flex justify-between items-center">
+                        <span class="text-gray-700 font-semibold">기록 #${lapNumber}</span>
+                        <span class="text-indigo-600 font-mono font-bold">${formatTime(lap)}</span>
+                    </li>
+                `;
+            }).join('');
+
+            // 다시 역순으로 돌려서 배열 상태 유지
+            laps.reverse();
+        }
+
+        // ===== 초기 화면 업데이트 =====
+        updateDisplay();
+    </script>
+</body>
+</html>

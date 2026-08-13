@@ -1,0 +1,26 @@
+/* 계산기 버튼 기본 스타일 */
+.btn {
+    @apply bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white font-bold py-4 px-2 rounded-lg transition-colors duration-150 text-lg cursor-pointer;
+}
+
+/* 함수 버튼 (C, DEL) */
+.btn-function {
+    @apply bg-red-600 hover:bg-red-500 active:bg-red-700;
+}
+
+/* 연산자 버튼 (+, -, ×, ÷) */
+.btn-operator {
+    @apply bg-blue-600 hover:bg-blue-500 active:bg-blue-700;
+}
+
+/* 등호 버튼 */
+.btn-equals {
+    @apply bg-green-600 hover:bg-green-500 active:bg-green-700;
+}
+
+/* 다크모드 대응 */
+@media (prefers-color-scheme: dark) {
+    .btn {
+        @apply bg-gray-700 hover:bg-gray-600 active:bg-gray-500;
+    }
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계산기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .btn-number {
+            @apply bg-gray-200 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-500 font-semibold text-lg py-4 rounded transition-colors;
+        }
+
+        .btn-operator {
+            @apply bg-orange-400 hover:bg-orange-500 active:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-500 dark:active:bg-orange-700 text-white font-semibold text-lg py-4 rounded transition-colors;
+        }
+
+        .btn-equals {
+            @apply bg-green-500 hover:bg-green-600 active:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 dark:active:bg-green-800 text-white font-semibold text-lg py-4 rounded transition-colors col-span-2;
+        }
+
+        .btn-clear {
+            @apply bg-red-500 hover:bg-red-600 active:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 dark:active:bg-red-800 text-white font-semibold text-lg py-4 rounded transition-colors col-span-2;
+        }
+
+        #display {
+            @apply w-full bg-gray-100 dark:bg-gray-800 dark:text-white text-right text-4xl p-4 rounded mb-4 font-mono overflow-hidden break-words;
+            word-break: break-all;
+            min-height: 80px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-sm p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">계산기</h1>
+
+            <div id="display">0</div>
+
+            <div class="calculator-grid">
+                <button class="btn-clear" onclick="calculator.clear()">C</button>
+                <button class="btn-operator" onclick="calculator.delete()">⌫</button>
+                <button class="btn-operator" onclick="calculator.operate('/')">/</button>
+
+                <button class="btn-number" onclick="calculator.appendNumber('7')">7</button>
+                <button class="btn-number" onclick="calculator.appendNumber('8')">8</button>
+                <button class="btn-number" onclick="calculator.appendNumber('9')">9</button>
+                <button class="btn-operator" onclick="calculator.operate('*')">×</button>
+
+                <button class="btn-number" onclick="calculator.appendNumber('4')">4</button>
+                <button class="btn-number" onclick="calculator.appendNumber('5')">5</button>
+                <button class="btn-number" onclick="calculator.appendNumber('6')">6</button>
+                <button class="btn-operator" onclick="calculator.operate('-')">−</button>
+
+                <button class="btn-number" onclick="calculator.appendNumber('1')">1</button>
+                <button class="btn-number" onclick="calculator.appendNumber('2')">2</button>
+                <button class="btn-number" onclick="calculator.appendNumber('3')">3</button>
+                <button class="btn-operator" onclick="calculator.operate('+')">+</button>
+
+                <button class="btn-number" onclick="calculator.appendNumber('0')">0</button>
+                <button class="btn-number" onclick="calculator.appendNumber('.')">.</button>
+                <button class="btn-equals" onclick="calculator.calculate()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const calculator = {
+            display: document.getElementById('display'),
+            currentInput: '0',
+            operator: null,
+            previousValue: null,
+            shouldResetDisplay: false,
+
+            updateDisplay() {
+                this.display.textContent = this.currentInput;
+            },
+
+            appendNumber(num) {
+                if (this.shouldResetDisplay) {
+                    this.currentInput = num;
+                    this.shouldResetDisplay = false;
+                } else {
+                    if (this.currentInput === '0' && num !== '.') {
+                        this.currentInput = num;
+                    } else if (num === '.' && this.currentInput.includes('.')) {
+                        return;
+                    } else {
+                        this.currentInput += num;
+                    }
+                }
+                this.updateDisplay();
+            },
+
+            operate(op) {
+                if (this.operator !== null && !this.shouldResetDisplay) {
+                    this.calculate();
+                }
+                this.previousValue = parseFloat(this.currentInput);
+                this.operator = op;
+                this.shouldResetDisplay = true;
+            },
+
+            calculate() {
+                if (this.operator === null || this.shouldResetDisplay) return;
+
+                const current = parseFloat(this.currentInput);
+                const previous = this.previousValue;
+                let result;
+
+                switch (this.operator) {
+                    case '+':
+                        result = previous + current;
+                        break;
+                    case '-':
+                        result = previous - current;
+                        break;
+                    case '*':
+                        result = previous * current;
+                        break;
+                    case '/':
+                        result = previous / current;
+                        break;
+                    default:
+                        return;
+                }
+
+                this.currentInput = result.toString();
+                this.operator = null;
+                this.shouldResetDisplay = true;
+                this.updateDisplay();
+            },
+
+            delete() {
+                if (this.currentInput.length > 1) {
+                    this.currentInput = this.currentInput.slice(0, -1);
+                } else {
+                    this.currentInput = '0';
+                }
+                this.updateDisplay();
+            },
+
+            clear() {
+                this.currentInput = '0';
+                this.operator = null;
+                this.previousValue = null;
+                this.shouldResetDisplay = false;
+                this.updateDisplay();
+            }
+        };
+    </script>
+</body>
+</html>

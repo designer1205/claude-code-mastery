@@ -1,0 +1,245 @@
+/* ==========================================================================
+   커스텀 스타일 (Tailwind CSS 보완용)
+   디자인 토큰: accent = indigo → violet 그라데이션, 중립색 = zinc 스케일
+   ========================================================================== */
+
+:root {
+    color-scheme: light;
+}
+
+html.dark {
+    color-scheme: dark;
+}
+
+/* 앵커 이동 시 부드러운 스크롤 (모션 축소 설정을 존중) */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+body {
+    font-feature-settings: "tnum" 1;
+}
+
+/* ================= 텍스트 / 배경 유틸 ================= */
+
+/* 이름·헤드라인용 그라데이션 텍스트 */
+.gradient-text {
+    background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* 섹션 상단 라벨 (예: "01 · ABOUT") */
+.section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ea580c;
+}
+
+html.dark .section-eyebrow {
+    color: #fb923c;
+}
+
+.section-eyebrow::before {
+    content: '';
+    width: 1.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+}
+
+/* 히어로 프로필 사진 뒤 원형 글로우 */
+.photo-glow {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.55) 0%, rgba(239, 68, 68, 0.25) 45%, transparent 72%);
+    filter: blur(24px);
+    z-index: -1;
+}
+
+/* 히어로/배경 블러 블롭 */
+.blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(72px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: -1;
+}
+
+html.dark .blob {
+    opacity: 0.28;
+}
+
+/* ================= 버튼 시스템 ================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #fff;
+    box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.55);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 10px 28px -6px rgba(249, 115, 22, 0.7);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #3f3f46;
+    border: 1px solid #e4e4e7;
+}
+
+.btn-secondary:hover {
+    border-color: #fdba74;
+    color: #ea580c;
+}
+
+html.dark .btn-secondary {
+    color: #e4e4e7;
+    border-color: #3f3f46;
+}
+
+html.dark .btn-secondary:hover {
+    border-color: #f97316;
+    color: #fdba74;
+}
+
+/* ================= 카드 공통 스타일 ================= */
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+    border-color: #fdba74;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px -12px rgba(234, 88, 12, 0.25);
+}
+
+html.dark .card {
+    background: rgba(39, 39, 42, 0.5);
+    border-color: #27272a;
+}
+
+html.dark .card:hover {
+    border-color: rgba(249, 115, 22, 0.5);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* ================= 스크롤 시 섹션 페이드인 ================= */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= 경력 타임라인 ================= */
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.8rem;
+    top: 0.3rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+}
+
+html.dark .timeline-item::before {
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25);
+}
+
+/* ================= 네비게이션 활성 링크 ================= */
+.nav-link {
+    position: relative;
+    color: #52525b;
+}
+
+html.dark .nav-link {
+    color: #a1a1aa;
+}
+
+.nav-link.is-active {
+    color: #ea580c;
+}
+
+html.dark .nav-link.is-active {
+    color: #fdba74;
+}
+
+/* ================= 스크롤바 스타일 (Chrome, Safari) ================= */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #fdba74;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #fb923c;
+    background-clip: padding-box;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    background-clip: padding-box;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+    background-clip: padding-box;
+}
+
+/* 버튼/카드 공통 클릭 효과 */
+button:active {
+    transform: scale(0.98);
+}

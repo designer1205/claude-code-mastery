@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카운터 앱</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-80">
+      <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">카운터</h1>
+
+      <!-- 카운트 표시 -->
+      <div class="bg-blue-50 rounded-lg p-6 mb-8 border-2 border-blue-200">
+        <p class="text-center text-gray-600 text-sm mb-2">현재 카운트</p>
+        <p id="countDisplay" class="text-6xl font-bold text-center text-blue-600">0</p>
+      </div>
+
+      <!-- 버튼 그룹 -->
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <button
+          onclick="decreaseCount()"
+          class="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+        >
+          -1
+        </button>
+        <button
+          onclick="resetCount()"
+          class="bg-blue-400 hover:bg-blue-500 active:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+        >
+          리셋
+        </button>
+        <button
+          onclick="increaseCount()"
+          class="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+        >
+          +1
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let count = 0;
+
+    function updateDisplay() {
+      document.getElementById('countDisplay').textContent = count;
+    }
+
+    function increaseCount() {
+      count++;
+      updateDisplay();
+    }
+
+    function decreaseCount() {
+      count--;
+      updateDisplay();
+    }
+
+    function resetCount() {
+      count = 0;
+      updateDisplay();
+    }
+  </script>
+</body>
+</html>

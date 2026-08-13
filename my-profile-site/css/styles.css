@@ -1,0 +1,172 @@
+/* ================= 커스텀 스타일 ================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* 섹션 헤딩: 제목 + 점 + 구분선 */
+.section-heading {
+    @apply flex items-center gap-3 text-lg font-bold text-slate-900 mb-2;
+    position: relative;
+}
+
+.section-heading::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #4338ca; /* indigo-700 */
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #6366f1; /* indigo-500 */
+    margin-left: auto;
+}
+
+/* 통계 카드 */
+.stat-card {
+    @apply bg-white border-2 border-indigo-100 rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow;
+}
+
+.stat-card:hover {
+    @apply border-indigo-300;
+}
+
+/* 기술스택 카드 */
+.skill-card {
+    @apply bg-white border border-slate-200 rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-all hover:border-indigo-300;
+}
+
+/* 포트폴리오 카드 */
+.project-card {
+    @apply bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm transition-all;
+}
+
+.project-card:hover {
+    @apply shadow-xl border-indigo-400 -translate-y-2 bg-indigo-50;
+}
+
+/* 컨테이너 (max-width) */
+.container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 링크 스타일 */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:focus-visible {
+    outline: 2px solid #1e40af;
+    outline-offset: 2px;
+}
+
+/* 버튼 스타일 */
+button {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+}
+
+button:focus-visible {
+    outline: 2px solid #1e40af;
+    outline-offset: 2px;
+}
+
+/* 프린트 스타일 */
+@media print {
+    header {
+        position: static;
+        background-color: #1e293b;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    main {
+        padding: 0;
+    }
+
+    aside {
+        position: static;
+    }
+
+    body {
+        background-color: white;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+    /* 페이지 나눔 방지 */
+    section {
+        page-break-inside: avoid;
+    }
+
+    .project-card {
+        page-break-inside: avoid;
+    }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    main {
+        padding: 8px 12px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    aside {
+        margin-top: 24px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .section-heading {
+        @apply text-base;
+    }
+}
+
+/* 토스트 알림 (추가 JS 기능용) */
+.toast {
+    @apply fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm;
+    animation: slideIn 0.3s ease-out;
+    z-index: 100;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
